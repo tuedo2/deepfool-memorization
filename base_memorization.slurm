@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --partition=gpuA40x4
 #SBATCH --time=12:00:00
-#SBATCH --job-name=df_attack
+#SBATCH --job-name=base_memorization
 #SBATCH --account=behk-delta-gpu
 ### GPU options ###
 #SBATCH --gpus-per-node=1
