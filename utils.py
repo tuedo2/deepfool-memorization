@@ -42,7 +42,7 @@ class ResNet50ForCIFAR100(nn.Module):
         super(ResNet50ForCIFAR100, self).__init__()
         
         # Load the pretrained ResNet50 model
-        self.resnet50 = models.resnet50(pretrained=False)  # Set pretrained=True if you want to use ImageNet weights
+        self.resnet50 = models.resnet50(weights=None)
         
         # Modify the first convolutional layer to use 3x3 kernel with stride 1 for CIFAR-100
         self.resnet50.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)

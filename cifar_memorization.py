@@ -12,7 +12,7 @@ from utils import subset_train_for_resnet
 device = torch.device(f'cuda' if torch.cuda.is_available() else 'cpu')
 
 transform = transforms.Compose([transforms.ToTensor()])
-cifar = torchvision.datasets.CIFAR100(root='./data', train=True, transform=transform, download=False)
+cifar = torchvision.datasets.CIFAR100(root='./data', train=True, transform=transform, download=True)
 trainloader = torch.utils.data.DataLoader(dataset=cifar, batch_size=512, shuffle=False)
 
 def get_correctness_for_model(model):
@@ -31,7 +31,7 @@ def get_correctness_for_model(model):
     trainset_correctness = torch.cat(trainset_correctness).cpu()
     return trainset_correctness
 
-num_models = 1000
+num_models = 500
 subset_ratio = 0.7
 
 masks = []
@@ -40,16 +40,24 @@ correctnesses = []
 for i in range(num_models):
     perm = torch.randperm(len(cifar)).numpy()
     
-    subset_idx = perm[(len(cifar) * subset_ratio):]
+    subset_idx = perm[int(len(cifar) * subset_ratio):]
     
     mask = np.zeros(len(cifar), dtype=bool)
     mask[subset_idx] = True
     masks.append(mask)
     
-    net = subset_train_for_resnet(cifar, subset_idx, num_epochs=70, device=device)
+    net = subset_train_for_resnet(cifar, subset_idx, num_epochs=60, device=device)
 
     correctness = get_correctness_for_model(net)
     correctnesses.append(correctness)
+
+    if (i+1) % 100 == 0:
+        mask_matrix = np.vstack([mask for mask in masks])
+        correctness_matrix = np.vstack([cness for cness in correctnesses])
+        with open('cifar_mask.npy', 'wb') as f:
+            np.save(f, mask_matrix)
+        with open('cifar_correctness.npy', 'wb') as f:
+            np.save(f, correctness_matrix)
 
 mask_matrix = np.vstack([mask for mask in masks])
 correctness_matrix = np.vstack([cness for cness in correctnesses])
