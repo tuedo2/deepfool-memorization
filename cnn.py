@@ -15,7 +15,7 @@ class CNN(nn.Module):
         x = torch.max_pool2d(x, 2)    # Max pooling with kernel size 2
         x = torch.relu(self.conv2(x))
         x = torch.max_pool2d(x, 2)
-        x = x.view(-1, 7*7*64)  # Flatten the feature map into a vector
+        x = x.reshape(-1, 7*7*64)  # Flatten the feature map into a vector
         x = torch.relu(self.fc1(x))  # Apply relu activation after the fully connected layer
         x = self.fc2(x)  # Final output layer
         return x

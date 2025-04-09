@@ -10,6 +10,30 @@ import numpy as np
 
 from cnn import CNN
 
+def full_train(train, num_epochs=10, device=torch.device('cuda')):
+    lr = 0.1
+    batch_size = 512
+    criterion = nn.CrossEntropyLoss()
+
+    trainloader = torch.utils.data.DataLoader(dataset=train, batch_size=batch_size, shuffle=True)
+    
+    net = CNN(10).to(device)
+    optimizer = optim.SGD(net.parameters(), lr=lr)
+
+    for epoch in range(num_epochs):
+        for inputs, labels in trainloader:
+            inputs, labels = inputs.to(device), labels.to(device)
+
+            optimizer.zero_grad()
+
+            outputs = net(inputs)
+            loss = criterion(outputs, labels)
+
+            loss.backward()
+            optimizer.step()
+    
+    return net
+
 def subset_train(train, subset_idx, num_epochs = 10, device=torch.device('cuda')):
     lr = 0.1
     batch_size = 512
