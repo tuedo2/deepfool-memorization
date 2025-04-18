@@ -5,9 +5,6 @@ import torchvision.transforms as transforms
 from torch.autograd import Variable
 import torch.nn.functional as F
 
-from cnn import CNN
-from utils import full_train
-
 device = torch.device(f'cuda' if torch.cuda.is_available() else 'cpu')
 
 criterion = nn.CrossEntropyLoss()
